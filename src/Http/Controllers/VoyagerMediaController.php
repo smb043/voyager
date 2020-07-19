@@ -332,6 +332,7 @@ class VoyagerMediaController extends Controller
         $createMode = $request->get('createMode') === 'true';
         $x = $request->get('x');
         $y = $request->get('y');
+        $position = $request->get('position');
         $height = $request->get('height');
         $width = $request->get('width');
 
@@ -350,7 +351,11 @@ class VoyagerMediaController extends Controller
                 $destImagePath = $originImagePath;
             }
 
-            Image::make($originImagePath)->crop($width, $height, $x, $y)->save($destImagePath);
+            // Image::make($originImagePath)->crop($width, $height, $x, $y)->save($destImagePath);
+            Image::make($originImagePath)
+              ->orientate()
+              ->fit($width, $height, null, $position ?? 'center')
+              ->save($destImagePath);
 
             $success = true;
             $message = __('voyager.media.success_crop_image');
